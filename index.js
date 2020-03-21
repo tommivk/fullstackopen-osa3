@@ -1,7 +1,9 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
+const cors = require('cors')
 
+app.use(cors())
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postdata'))
 
@@ -49,10 +51,10 @@ let persons = [
   })
 
   app.delete('/api/persons/:id', (req,res) => {
-    console.log(persons.length)
+   
     const id = Number(req.params.id)
     persons = persons.filter(person => person.id !== id)
-    console.log(persons.length)
+    
     res.status(204).end()
   })
 
@@ -90,7 +92,7 @@ let persons = [
   
 
   
-  const PORT = 3001
+  const PORT = process.env.PORT || 3001
   app.listen(PORT, () => {
       console.log(`server is running on port ${PORT}`)
       
