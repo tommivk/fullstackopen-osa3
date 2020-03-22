@@ -6,7 +6,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const Person = require('./models/person')
 
-// app.use(express.static('build'))
+app.use(express.static('build'))
 
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :postdata'))
@@ -79,9 +79,6 @@ morgan.token('postdata', function(req,res){return JSON.stringify(req.body)})
   
     const body = req.body
      
-       if(!body.name){
-           return res.status(400).json({error: 'Name is missing'})
-       }
  
       const person = new Person({
           name: body.name,
@@ -101,6 +98,10 @@ morgan.token('postdata', function(req,res){return JSON.stringify(req.body)})
   
     if (error.name === 'CastError' && error.kind == 'ObjectId') {
       return response.status(400).send({ error: 'malformatted id' })
+    }
+    if(error.name === 'ValidationError'){
+       
+        return response.status(400).json({error: error.message})
     }
   
     next(error)
